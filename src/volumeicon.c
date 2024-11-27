@@ -915,10 +915,14 @@ static void status_icon_on_popup_menu(GtkStatusIcon *status_icon, guint button,
 	                 G_CALLBACK(menu_about_on_activate), NULL);
 
 	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), volcontrol);
-	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), separator1);
-	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), preferences);
+	#ifndef COMPILEWITH_AIO
+		gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), separator1);
+		gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), preferences);
+	#endif
 	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), about);
-	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), separator2);
+	#ifndef COMPILEWITH_AIO
+		gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), separator2);
+	#endif
 	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), quit);
 
 	gtk_widget_show_all(gtkMenu);

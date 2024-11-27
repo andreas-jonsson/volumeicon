@@ -80,7 +80,6 @@ CPPFLAGS=${OLD_CPPFLAGS}
 OSS_CFLAGS="-DCOMPILEWITH_OSS -DOSS_HEADER=\\\"${OSS_HEADER}\\\""
 AC_SUBST([OSS_CFLAGS])
 elif test "x${aio}" = xyes; then
-AC_CHECK_HEADER([sys/audioio.h], [], [AC_MSG_ERROR([could not find sys/audioio.h])], [])
 AIO_CFLAGS=-DCOMPILEWITH_AIO
 AC_SUBST(AIO_CFLAGS)
 AC_SUBST(AIO_LIBS)
