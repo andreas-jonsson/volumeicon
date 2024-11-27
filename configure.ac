@@ -26,9 +26,13 @@ AM_GLIB_DEFINE_LOCALEDIR(LOCALEDIR)
 
 # Checks for command line options
 AC_ARG_ENABLE([oss],
-  [  --disable-oss    disable oss],
+  [  --disable-oss      disable oss],
   [oss=${enableval}],
   [oss=no])
+AC_ARG_ENABLE([aio],
+  [  --disable-aio      disable aio],
+  [aio=${enableval}],
+  [aio=no])
 AC_ARG_ENABLE([notify],
   [  --disable-notify   disable notify],
   [notify=${enableval}],
@@ -44,13 +48,7 @@ PKG_CHECK_MODULES([X11], [x11])
 AC_SUBST(X11_CFLAGS)
 AC_SUBST(X11_LIBS)
 
-if test "x${oss}" = xno; then
-# Check for alsa
-PKG_CHECK_MODULES([ALSA], [alsa])
-AC_SUBST(ALSA_CFLAGS)
-AC_SUBST(ALSA_LIBS)
-OSS_CFLAGS=""
-else
+if test "x${oss}" = xyes; then
 AC_ARG_WITH([oss-include-path],
   [AS_HELP_STRING(
     [--with-oss-include-path],
@@ -81,6 +79,19 @@ CPPFLAGS=${OLD_CPPFLAGS}
 # Pass the absolute path to the OSS header file
 OSS_CFLAGS="-DCOMPILEWITH_OSS -DOSS_HEADER=\\\"${OSS_HEADER}\\\""
 AC_SUBST([OSS_CFLAGS])
+elif test "x${aio}" = xyes; then
+AC_CHECK_HEADER([sys/audioio.h], [], [AC_MSG_ERROR([could not find sys/audioio.h])], [])
+AIO_CFLAGS=-DCOMPILEWITH_AIO
+AC_SUBST(AIO_CFLAGS)
+AC_SUBST(AIO_LIBS)
+ALSA_CFLAGS=""
+OSS_CFLAGS=""
+else
+PKG_CHECK_MODULES([ALSA], [alsa])
+AC_SUBST(ALSA_CFLAGS)
+AC_SUBST(ALSA_LIBS)
+OSS_CFLAGS=""
+AIO_CFLAGS=""
 fi
 
 if test "x${notify}" = xyes; then
@@ -94,6 +105,7 @@ fi
 AC_SUBST(OSS_CFLAGS)
 
 AM_CONDITIONAL(ENABLE_OSS, test "$oss" = "yes")
+AM_CONDITIONAL(ENABLE_AIO, test "$aio" = "yes")
 
 DEFAULT_MIXERAPP="xterm -e 'alsamixer'"
 AC_ARG_WITH(default-mixerapp,

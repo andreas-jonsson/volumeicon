@@ -35,8 +35,10 @@
 #endif
 #include <libnotify/notify.h>
 #endif
-#ifdef COMPILEWITH_OSS
+#if defined(COMPILEWITH_OSS)
 #include "oss_backend.h"
+#elif defined(COMPILEWITH_AIO)
+#include "aio_backend.h"
 #else
 #include "alsa_backend.h"
 #endif
@@ -63,7 +65,7 @@ enum NOTIFICATION {
 
 // About
 #define APPNAME "Volume Icon"
-#define COPYRIGHT "Copyright (c) Mart G"
+#define COPYRIGHT "Copyright (c) 2023 Mart G\nCopyright (c) 2023 Andreas T Jonsson"
 #define COMMENTS "Volume control for your system tray."
 #define WEBSITE "http://nullwise.com/volumeicon.html"
 
@@ -1380,7 +1382,7 @@ int main(int argc, char *argv[])
 	gtk_container_add(GTK_CONTAINER(m_popup_window), GTK_WIDGET(hbox));
 
 // Setup backend
-#ifdef COMPILEWITH_OSS
+#if defined(COMPILEWITH_OSS)
 	backend_setup = &oss_setup;
 	backend_set_channel = &oss_set_channel;
 	backend_set_volume = &oss_set_volume;
@@ -1389,6 +1391,15 @@ int main(int argc, char *argv[])
 	backend_get_mute = &oss_get_mute;
 	backend_get_channel = &oss_get_channel;
 	backend_get_channel_names = &oss_get_channel_names;
+#elif defined(COMPILEWITH_AIO)
+	backend_setup = &aio_setup;
+	backend_set_channel = &aio_set_channel;
+	backend_set_volume = &aio_set_volume;
+	backend_get_volume = &aio_get_volume;
+	backend_set_mute = &aio_set_mute;
+	backend_get_mute = &aio_get_mute;
+	backend_get_channel = &aio_get_channel;
+	backend_get_channel_names = &aio_get_channel_names;
 #else
 	backend_setup = &asound_setup;
 	backend_set_channel = &asound_set_channel;
