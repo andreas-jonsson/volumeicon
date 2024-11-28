@@ -20,6 +20,9 @@ Compilation Flags
               and OSS support at the moment, so using this flag will
               disable ALSA support.
 
+--enable-aio: Disables the ALSA backend and enable the NetBSD 'mixerctl'
+              backend. Only the 'master' output channel is supported.
+
 --enable-notify: Enables notifications, this adds a dependency for
                  libnotify >= 0.5.0.
 
